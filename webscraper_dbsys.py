@@ -168,10 +168,12 @@ if compResults_table:
         ## CATEGORY TABLE INSERTS in disc (needs to be static) ##
         
         ## LIFTER CATEGORY TABLE INSERTS ##
-
-        #lifter_insert = (
-            #f"({lifter_id}, {team_id}, {lifter_YOB}, '{lifter_state}', '{lifter_gender}', '{first_name}', '{last_name}', '{drug_test}');")
-        #print(lifter_insert)
+        #if category in category_mapping:
+            #category_deets = category_mapping[category]
+            #lifter_gender = category_deets["gender"]
+            #lifter_insert = (
+                #f"({lifter_id}, {team_id}, {lifter_YOB}, '{lifter_state}', '{lifter_gender}', '{first_name}', '{last_name}', '{drug_test}');")
+            #print(lifter_insert)
 
         ## LIFT TABLE INSERTS ##
 
