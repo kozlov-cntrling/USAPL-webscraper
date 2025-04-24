@@ -1,13 +1,19 @@
 from bs4 import BeautifulSoup
 import requests
 from urllib.parse import urlparse, parse_qs
+import os
+import platform
+import subprocess
 
 #make function to iterate through url IDs to get a bunch of competitions, and format all the data accordingly to the insert into statements on mysql
 
 url = 'https://usapl.liftingdatabase.com/competitions-view?id=121328'
 scrape_url = requests.get(url)
 soup = BeautifulSoup(scrape_url.text, 'html.parser')
-with open("output.txt", "w") as file:
+
+os.makedirs("data", exist_ok=True)
+
+with open("data/output.txt", "w") as file:
     file.write(
     "/* Database Systems, Group 12 /\n"
     "/ Type of SQL : MySQL /\n"
@@ -70,7 +76,7 @@ with open("output.txt", "w") as file:
     )
     file.write(
         "CREATE TABLE COMPETITION_LOG (\n"
-        "\tCOMP_LOG_LIFTER_ID INT PRIMARY KEY,\n"
+        "\tCOMP_LOG_LIFTER_ID VARCHAR(20) PRIMARY KEY,\n"
         "\tLIFTER_ID INT,\n"
         "\tCOMPETITION_ID INT,\n"
         "\tCAT_ID INT,\n"
@@ -82,10 +88,14 @@ with open("output.txt", "w") as file:
         ");\n\n"
     )
     file.write(
-        "CREATE TABLE LIFT ("
-	    "LIFT_ID INT PRIMARY KEY,"
-
-        ");"
+        "CREATE TABLE LIFT (\n"
+	    "\tLIFT_ID VARCHAR(20) PRIMARY KEY,\n"
+        "\tLIFT_NAME VARCHAR(13) PRIMARY KEY,\n"
+        "\tLIFT_WEIGHT DECIMAL(4,1),\n"
+        "\tLIFT_ATMPTNUM INT NOT NULL,\n"
+        "\tFOREIGN KEY(COMP_LOG_LIFTER_ID) REFERENCES COMPETITION_LOG(COMP_LOG_LIFTER_ID)\n"
+        ");\n\n"
+        "/*  —------------------------------------------------------------------------------------------------------------------------- */"
     )
 #initialize variables
 category = None
@@ -169,8 +179,37 @@ VALUES
 (28, 'Male - Equipped Teen 2', 'M', 1, 1),
 (29, 'Male - Equipped Teen 3', 'M', 1, 1),
 (30, 'Male - Equipped Teen 1', 'M', 1, 1);
-COMMIT;}
+COMMIT;
 """
+sql_comp_log = f"""/*Insert data
+COMPETITION_LOG */
+START TRANSACTION;
+INSERT INTO COMPETITION_LOG (COMP_LOG_LIFTER_ID, LIFTER_ID, COMPETITION_ID, CAT_ID, COMP_LOG_LIFTER_BODYWEIGHT, COMP_LOG_LIFTER_EXPERIENCE)
+VALUES
+"""
+sql_lift = f"""/*Insert data
+LIFT */
+START TRANSACTION;
+INSERT INTO LIFT (LIFT_ID, COMP_LOG_LIFTER_ID, AL_ID, LIFT_NAME)
+VALUES
+"""
+sql_lifter = f"""/*Insert data
+LIFTER */
+START TRANSACTION;
+INSERT INTO LIFTER (LIFTER_ID, TEAM_ID, LIFTER_YOB, LIFTER_STATE, LIFTER_GENDER, LIFTER_FNAME, LIFTER_LNAME, LIFTER_DRUG_TEST)
+VALUES
+"""
+
+sql_team = (
+"/*Insert data \nTEAM */"
+"START TRANSACTION;\n"
+"INSERT INTO TEAM (TEAM_ID, TEAM_NAME)\n"
+"VALUES\n"
+)
+
+with open("data/output.txt", "a") as out_file:
+    out_file.write(sql_category)
+
 #Comp name
 comp_name = soup.find("h3").get_text(strip=True)
 print(f"Competition Name: {comp_name}")
@@ -253,62 +292,70 @@ if compResults_table:
             drug_test = "NULL"
 
         #All lift attempts
-        lift_tds = row.find_all("td", id=lambda x: x and x.startswith("lift_"))
+        with open("data/output.txt", "a") as out_file:
+            out_file.write(sql_lift)
+
+            lift_tds = row.find_all("td", id=lambda x: x and x.startswith("lift_"))
+            for lift_td in lift_tds:
+                td_lift_id = lift_td.get("id")
+                if lifter_id in td_lift_id:
+                    parts = td_lift_id.split("_")
+                    if len(parts) >= 3:
+                        try:
+                            lift_number = int(parts[2])
+                            weight_text = lift_td.get_text(strip=True)
+                            lift_numbers[lift_number - 1] = weight_text
         
-        for lift_td in lift_tds:
-            td_lift_id = lift_td.get("id")
-            if lifter_id in td_lift_id:
-                parts = td_lift_id.split("_")
-                if len(parts) >= 3:
-                    try:
-                        lift_number = int(parts[2])
-                        weight_text = lift_td.get_text(strip=True)
-                        lift_numbers[lift_number - 1] = weight_text
-    
-                        if lift_number in range(1,4):
-                            lift_name = lift_dict[0]
-                        elif lift_number in range(4,7):
-                            lift_name = lift_dict[1]
-                        elif lift_number in range(7,10):
-                            lift_name = lift_dict[2]
-                    except Exception:
-                        pass
-                ## LIFT TABLE INSERTS ##
-                with open("output.txt", "w") as out_file:
+                            if lift_number in range(1,4):
+                                lift_name = lift_dict[0]
+                            elif lift_number in range(4,7):
+                                lift_name = lift_dict[1]
+                            elif lift_number in range(7,10):
+                                lift_name = lift_dict[2]
+                        except Exception:
+                            pass
+                    ## LIFT TABLE INSERTS ##
                     lift_id = lifter_id + '_' + str(lift_number) + '_' + comp_id    
-                    lift_insert = (
-                    f"('{lift_id}', '{comp_log_lifter_id}', '{lift_name}', {weight_text}, {lift_number})"
-                                )
+                    lift_insert = (f"('{lift_id}', '{comp_log_lifter_id}', '{lift_name}', {weight_text}, {lift_number})")
                     if row != compResults_table.find_all("tr")[-1]:
                         lift_insert += ","
+                    else:
+                        lift_insert += ";\nCOMMIT;"
                     out_file.write(lift_insert + "\n")
                 
         ## COMPETITION_LOG TABLE INSERTS ##
-        with open("output.txt", "w") as out_file:
+        with open("data/output.txt", "a") as out_file:
+            out_file.write(sql_comp_log)
+
             if category in category_mapping:
                 category_deets = category_mapping[category]
                 lifter_experience = category_deets["experience"]
                 comp_log_insert = f"('{comp_log_lifter_id}', {lifter_id}, {comp_id}, '{category}', {lifter_weight}, {lifter_experience})"
-                if row != compResults_table.find_all("tr")[-1]:  # Check if it's not the last row
+                if row != compResults_table.find_all("tr")[-1]:
                     comp_log_insert += ","
+                else:
+                    comp_log_insert += ";\nCOMMIT;"
                 out_file.write(comp_log_insert + "\n")
 
         ## TEAM TABLE INSERTS ##
-        with open("output.txt", "w") as out_file:
+        with open("data/output.txt", "a") as out_file:
+            out_file.write(sql_team)
+
             if team_id not in teams_inserted:
                 if team_id == "NULL":
                     team_id = "NULL"
                     team_name = "NULL"
                 teams_inserted[team_id] = team_name
-                team_insert = f"VALUES ({team_id}, '{team_name}')"
+                team_insert = (f"VALUES\n({team_id}, '{team_name}')")
                 if team_id != list(teams_inserted.keys())[-1]:
-                    team_insert += ","
+                    team_insert += ";"
+                else:
+                    team_insert += ";\nCOMMIT;"
                 out_file.write(team_insert + "\n")
 
-        
-
         ## LIFTER CATEGORY TABLE INSERTS ##
-        with open("output.txt", "w") as out_file:
+        with open("data/output.txt", "a") as out_file:
+            out_file.write(sql_lifter)
             if category in category_mapping:
                 category_deets = category_mapping[category]
                 lifter_gender = category_deets["gender"]
@@ -317,5 +364,18 @@ if compResults_table:
                 )
                 if row != compResults_table.find_all("tr")[-1]:
                     lifter_insert += ","
+                else:
+                    lifter_insert += ";\nCOMMIT;"
                 out_file.write(lifter_insert + "\n")
-    
+
+current_os = platform.system()
+
+file_path = os.path.abspath("data/output.txt")
+print(f"File saved at: {file_path}")
+
+if current_os == "Windows":
+    os.startfile(file_path)
+elif current_os == "Darwin":  # macOS
+    subprocess.run(["open", file_path])
+elif current_os == "Linux":
+    subprocess.run(["xdg-open", file_path])
