@@ -6,12 +6,47 @@ import platform
 import subprocess
 
 #make function to iterate through url IDs to get a bunch of competitions, and format all the data accordingly to the insert into statements on mysql
-
-url = 'https://usapl.liftingdatabase.com/competitions-view?id=121328'
-scrape_url = requests.get(url)
-soup = BeautifulSoup(scrape_url.text, 'html.parser')
+print(os.getcwd())
 
 os.makedirs("data", exist_ok=True)
+
+sql_category = """
+/*Insert data CATEGORY */
+START TRANSACTION;
+INSERT INTO CATEGORY (CAT_ID, CAT_NAME, CAT_GENDER, CAT_EXPERIENCE_MIN, CAT_EXPERIENCE_MAX)
+VALUES
+(1, 'Female - Raw Junior', 'F', 2, 2),
+(2, 'Female - Raw Master 1', 'F', 5, 5),
+(3, 'Female - Raw Master 2', 'F', 5, 5),
+(4, 'Female - Raw Open', 'F', 0, 0),
+(5, 'Female - Raw Teen 2', 'F', 1, 1),
+(6, 'Female - Raw Teen 3', 'F', 1, 1),
+(7, 'Female - Raw Teen 1', 'F', 1, 1),
+(8, 'Male - Raw Junior', 'M', 2, 2),
+(9, 'Male - Raw Master 1', 'M', 5, 5),
+(10, 'Male - Raw Master 2', 'M', 5, 5),
+(11, 'Male - Raw Master 3', 'M', 5, 5),
+(12, 'Male - Raw Open', 'M', 0, 0),
+(13, 'Male - Raw Teen 2', 'M', 1, 1),
+(14, 'Male - Raw Teen 3', 'M', 1, 1),
+(15, 'Male - Raw Teen 1', 'M', 1, 1),
+(16, 'Female - Equipped Junior', 'F', 2, 2),
+(17, 'Female - Equipped Master 1', 'F', 5, 5),
+(18, 'Female - Equipped Master 2', 'F', 5, 5),
+(19, 'Female - Equipped Open', 'F', 0, 0),
+(20, 'Female - Equipped Teen 2', 'F', 1, 1),
+(21, 'Female - Equipped Teen 3', 'F', 1, 1),
+(22, 'Female - Equipped Teen 1', 'F', 1, 1),
+(23, 'Male - Equipped Junior', 'M', 2, 2),
+(24, 'Male - Equipped Master 1', 'M', 5, 5),
+(25, 'Male - Equipped Master 2', 'M', 5, 5),
+(26, 'Male - Equipped Master 3', 'M', 5, 5),
+(27, 'Male - Equipped Open', 'M', 0, 0),
+(28, 'Male - Equipped Teen 2', 'M', 1, 1),
+(29, 'Male - Equipped Teen 3', 'M', 1, 1),
+(30, 'Male - Equipped Teen 1', 'M', 1, 1);
+COMMIT;
+"""
 
 with open("data/output.txt", "w") as file:
     file.write(
@@ -97,6 +132,9 @@ with open("data/output.txt", "w") as file:
         ");\n\n"
         "/*  —------------------------------------------------------------------------------------------------------------------------- */"
     )
+    file.write(
+        sql_category
+    )
 #initialize variables
 category = None
 category_id = 0
@@ -108,6 +146,12 @@ lift_id = None
 lift_name = None
 lift_insert = None
 team_id = "Null"
+
+lift_value = []
+lifter_value = []
+comp_log_value = []
+team_value = []
+
 #dictonaries
 teams_inserted = {}
 lift_dict = ['Squat', 'Bench Press', 'Deadlift']
@@ -144,43 +188,6 @@ category_mapping = {
     "Male - Equipped Teen 1": {"id": 30, "experience": 1, "gender": "M"},
 }
 # CATEGORY TABLE INSERTS in disc (needs to be static) ##
-sql_category = """
-/*Insert data CATEGORY */
-START TRANSACTION;
-INSERT INTO CATEGORY (CAT_ID, CAT_NAME, CAT_GENDER, CAT_EXPERIENCE_MIN, CAT_EXPERIENCE_MAX)
-VALUES
-(1, 'Female - Raw Junior', 'F', 2, 2),
-(2, 'Female - Raw Master 1', 'F', 5, 5),
-(3, 'Female - Raw Master 2', 'F', 5, 5),
-(4, 'Female - Raw Open', 'F', 0, 0),
-(5, 'Female - Raw Teen 2', 'F', 1, 1),
-(6, 'Female - Raw Teen 3', 'F', 1, 1),
-(7, 'Female - Raw Teen 1', 'F', 1, 1),
-(8, 'Male - Raw Junior', 'M', 2, 2),
-(9, 'Male - Raw Master 1', 'M', 5, 5),
-(10, 'Male - Raw Master 2', 'M', 5, 5),
-(11, 'Male - Raw Master 3', 'M', 5, 5),
-(12, 'Male - Raw Open', 'M', 0, 0),
-(13, 'Male - Raw Teen 2', 'M', 1, 1),
-(14, 'Male - Raw Teen 3', 'M', 1, 1),
-(15, 'Male - Raw Teen 1', 'M', 1, 1),
-(16, 'Female - Equipped Junior', 'F', 2, 2),
-(17, 'Female - Equipped Master 1', 'F', 5, 5),
-(18, 'Female - Equipped Master 2', 'F', 5, 5),
-(19, 'Female - Equipped Open', 'F', 0, 0),
-(20, 'Female - Equipped Teen 2', 'F', 1, 1),
-(21, 'Female - Equipped Teen 3', 'F', 1, 1),
-(22, 'Female - Equipped Teen 1', 'F', 1, 1),
-(23, 'Male - Equipped Junior', 'M', 2, 2),
-(24, 'Male - Equipped Master 1', 'M', 5, 5),
-(25, 'Male - Equipped Master 2', 'M', 5, 5),
-(26, 'Male - Equipped Master 3', 'M', 5, 5),
-(27, 'Male - Equipped Open', 'M', 0, 0),
-(28, 'Male - Equipped Teen 2', 'M', 1, 1),
-(29, 'Male - Equipped Teen 3', 'M', 1, 1),
-(30, 'Male - Equipped Teen 1', 'M', 1, 1);
-COMMIT;
-"""
 sql_comp_log = f"""/*Insert data
 COMPETITION_LOG */
 START TRANSACTION;
@@ -190,7 +197,7 @@ VALUES
 sql_lift = f"""/*Insert data
 LIFT */
 START TRANSACTION;
-INSERT INTO LIFT (LIFT_ID, COMP_LOG_LIFTER_ID, AL_ID, LIFT_NAME)
+INSERT INTO LIFT (LIFT_ID, COMP_LOG_LIFTER_ID, LIFT_NAME, LIFT_WEIGHT, LIFT_ATMPTNUM)
 VALUES
 """
 sql_lifter = f"""/*Insert data
@@ -202,13 +209,13 @@ VALUES
 
 sql_team = (
 "/*Insert data \nTEAM */"
-"START TRANSACTION;\n"
+"\nSTART TRANSACTION;\n"
 "INSERT INTO TEAM (TEAM_ID, TEAM_NAME)\n"
 "VALUES\n"
 )
-
-with open("data/output.txt", "a") as out_file:
-    out_file.write(sql_category)
+url = 'https://usapl.liftingdatabase.com/competitions-view?id=121328'
+scrape_url = requests.get(url)
+soup = BeautifulSoup(scrape_url.text, 'html.parser')
 
 #Comp name
 comp_name = soup.find("h3").get_text(strip=True)
@@ -233,6 +240,7 @@ if header_table:
                     comp_date = td.get_text(strip=True)
 
 compResults_table = soup.find("table", id="competition_view_results")
+
 
 if compResults_table:
     for row in compResults_table.find_all("tr"):
@@ -292,81 +300,87 @@ if compResults_table:
             drug_test = "NULL"
 
         #All lift attempts
-        with open("data/output.txt", "a") as out_file:
-            out_file.write(sql_lift)
 
-            lift_tds = row.find_all("td", id=lambda x: x and x.startswith("lift_"))
-            for lift_td in lift_tds:
-                td_lift_id = lift_td.get("id")
-                if lifter_id in td_lift_id:
-                    parts = td_lift_id.split("_")
-                    if len(parts) >= 3:
-                        try:
-                            lift_number = int(parts[2])
-                            weight_text = lift_td.get_text(strip=True)
-                            lift_numbers[lift_number - 1] = weight_text
-        
-                            if lift_number in range(1,4):
-                                lift_name = lift_dict[0]
-                            elif lift_number in range(4,7):
-                                lift_name = lift_dict[1]
-                            elif lift_number in range(7,10):
-                                lift_name = lift_dict[2]
-                        except Exception:
-                            pass
-                    ## LIFT TABLE INSERTS ##
-                    lift_id = lifter_id + '_' + str(lift_number) + '_' + comp_id    
-                    lift_insert = (f"('{lift_id}', '{comp_log_lifter_id}', '{lift_name}', {weight_text}, {lift_number})")
-                    if row != compResults_table.find_all("tr")[-1]:
-                        lift_insert += ","
-                    else:
-                        lift_insert += ";\nCOMMIT;"
-                    out_file.write(lift_insert + "\n")
+        lift_tds = row.find_all("td", id=lambda x: x and x.startswith("lift_"))
+        for lift_td in lift_tds:
+            td_lift_id = lift_td.get("id")
+            if lifter_id in td_lift_id:
+                parts = td_lift_id.split("_")
+                if len(parts) >= 3:
+                    try:
+                        lift_number = int(parts[2])
+                        weight_text = lift_td.get_text(strip=True)
+                        lift_numbers[lift_number - 1] = weight_text
+                        if weight_text == "":
+                            weight_text = "0"
+
+                        if lift_number in range(0,4):
+                            lift_name = lift_dict[0]
+                        elif lift_number in range(4,7):
+                            lift_name = lift_dict[1]
+                        elif lift_number in range(7,10):
+                            lift_name = lift_dict[2]
+                    except Exception:
+                        pass
+                ## LIFT TABLE INSERTS ##
+                lift_id = lifter_id + '_' + str(lift_number) + '_' + comp_id    
+                lift_insert = (f"('{lift_id}', '{comp_log_lifter_id}', '{lift_name}', {weight_text}, {lift_number})")
+                lift_value.append(lift_insert)
+
                 
         ## COMPETITION_LOG TABLE INSERTS ##
-        with open("data/output.txt", "a") as out_file:
-            out_file.write(sql_comp_log)
 
-            if category in category_mapping:
-                category_deets = category_mapping[category]
-                lifter_experience = category_deets["experience"]
-                comp_log_insert = f"('{comp_log_lifter_id}', {lifter_id}, {comp_id}, '{category}', {lifter_weight}, {lifter_experience})"
-                if row != compResults_table.find_all("tr")[-1]:
-                    comp_log_insert += ","
-                else:
-                    comp_log_insert += ";\nCOMMIT;"
-                out_file.write(comp_log_insert + "\n")
+
+        if category in category_mapping:
+            category_deets = category_mapping[category]
+            lifter_experience = category_deets["experience"]
+            comp_log_insert = f"('{comp_log_lifter_id}', {lifter_id}, {comp_id}, '{category}', {lifter_weight}, {lifter_experience})"
+            comp_log_value.append(comp_log_insert)
 
         ## TEAM TABLE INSERTS ##
-        with open("data/output.txt", "a") as out_file:
-            out_file.write(sql_team)
 
-            if team_id not in teams_inserted:
-                if team_id == "NULL":
-                    team_id = "NULL"
-                    team_name = "NULL"
-                teams_inserted[team_id] = team_name
-                team_insert = (f"VALUES\n({team_id}, '{team_name}')")
-                if team_id != list(teams_inserted.keys())[-1]:
-                    team_insert += ";"
-                else:
-                    team_insert += ";\nCOMMIT;"
-                out_file.write(team_insert + "\n")
+        if team_id not in teams_inserted:
+            teams_inserted[team_id] = team_name
+            team_insert = (f"({team_id}, '{team_name}')")
+            team_value.append(team_insert)
+
 
         ## LIFTER CATEGORY TABLE INSERTS ##
-        with open("data/output.txt", "a") as out_file:
-            out_file.write(sql_lifter)
-            if category in category_mapping:
-                category_deets = category_mapping[category]
-                lifter_gender = category_deets["gender"]
-                lifter_insert = (
-                    f"({lifter_id}, {team_id}, {lifter_YOB}, '{lifter_state}', '{lifter_gender}', '{first_name}', '{last_name}', '{drug_test}')"
-                )
-                if row != compResults_table.find_all("tr")[-1]:
-                    lifter_insert += ","
-                else:
-                    lifter_insert += ";\nCOMMIT;"
-                out_file.write(lifter_insert + "\n")
+
+        if category in category_mapping:
+            category_deets = category_mapping[category]
+            lifter_gender = category_deets["gender"]
+            lifter_insert = (
+                f"({lifter_id}, {team_id}, {lifter_YOB}, '{lifter_state}', '{lifter_gender}', '{first_name}', '{last_name}', '{drug_test}')"
+            )
+            lifter_value.append(lifter_insert)
+
+final_sql_blocks = []
+
+if lift_value:
+    full_lift_sql = f"{sql_lift}" + ",\n".join(lift_value) + ";\nCOMMIT;"
+    final_sql_blocks.append(full_lift_sql)
+
+
+if comp_log_value:
+    full_comp_log_sql = f"{sql_comp_log}" + ",\n".join(comp_log_value) + ";\nCOMMIT;"
+    final_sql_blocks.append(full_comp_log_sql)
+
+
+if team_value:
+    full_team_sql = f"{sql_team}" + ",\n".join(team_value) + ";\nCOMMIT;"
+    final_sql_blocks.append(full_team_sql)
+
+
+if lifter_value:
+    full_lifter_sql = f"{sql_lifter}" + ",\n".join(lifter_value) + ";\nCOMMIT;"
+    final_sql_blocks.append(full_lifter_sql)
+
+final_sql_script = "\n\n".join(final_sql_blocks)
+
+with open("data/output.txt", "a") as out_file:
+    out_file.write(final_sql_script)
+
 
 current_os = platform.system()
 
