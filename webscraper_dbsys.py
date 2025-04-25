@@ -5,7 +5,9 @@ import os
 import platform
 import subprocess
 
-#make function to iterate through url IDs to get a bunch of competitions, and format all the data accordingly to the insert into statements on mysql
+# MANUALLY FILL IN INSERTS FOR VENUE TABLE AND COMPETITION TABLE
+
+
 print(os.getcwd())
 
 os.makedirs("data", exist_ok=True)
@@ -83,8 +85,9 @@ with open("data/output.txt", "w") as file:
         "CREATE TABLE COMPETITION (\n"
         "\tCOMPETITION_ID INT PRIMARY KEY,\n"
         "\tVEN_ID INT,\n"
+        "\tCOMPETITION_DATE DATE NOT NULL,\n"
         "\tCOMPETITION_NAME VARCHAR(100) NOT NULL,\n"
-        "\tCOMPETITION_DRUG_STATUS BOOLEAN NOT NULL,\n"
+        "\tCOMPETITION_DRUG_STATUS ENUM('tested', 'untested') NOT NULL,\n"
         "\tFOREIGN KEY(VEN_ID) REFERENCES VENUE(VEN_ID)\n"
         ");\n\n"
     )
@@ -125,9 +128,10 @@ with open("data/output.txt", "w") as file:
     file.write(
         "CREATE TABLE LIFT (\n"
 	    "\tLIFT_ID VARCHAR(20) PRIMARY KEY,\n"
-        "\tLIFT_NAME VARCHAR(13) PRIMARY KEY,\n"
+        "\tLIFT_NAME VARCHAR(13),\n"
         "\tLIFT_WEIGHT DECIMAL(4,1),\n"
         "\tLIFT_ATMPTNUM INT NOT NULL,\n"
+        "\tCOMP_LOG_LIFTER_ID VARCHAR(20),\n"
         "\tFOREIGN KEY(COMP_LOG_LIFTER_ID) REFERENCES COMPETITION_LOG(COMP_LOG_LIFTER_ID)\n"
         ");\n\n"
         "/*  —------------------------------------------------------------------------------------------------------------------------- */"
@@ -206,7 +210,21 @@ START TRANSACTION;
 INSERT INTO LIFTER (LIFTER_ID, TEAM_ID, LIFTER_YOB, LIFTER_STATE, LIFTER_GENDER, LIFTER_FNAME, LIFTER_LNAME, LIFTER_DRUG_TEST)
 VALUES
 """
+venue_insert = """
+/*Insert data
+VENUE */
+INSERT INTO VENUE (VEN_ID, VEN_NAME, VEN_STREET_NUMBER, VEN_STREET_NAME, VEN_CITY_NAME, VEN_STATE_NAME, VEN_ZIP_CODE)
+VALUES 
+( , , , , , , );
+COMMIT;
+"""
 
+sql_comp = f"""
+/*Insert data
+COMPETITION */
+INSERT INTO COMPETITION (COMPETITION_ID, VEN_ID, COMPETITION_NAME, COMPETITION_DATE, COMPETITION_DRUG_STATUS)
+VALUES
+"""
 sql_team = (
 "/*Insert data \nTEAM */"
 "\nSTART TRANSACTION;\n"
@@ -227,6 +245,7 @@ comp_id = query.get('id', [None])[0]
 print(f"Competition ID: {comp_id}")
 
 #Comp date
+comp_date = None
 header_table = soup.find("table")
 if header_table:
     tbody = header_table.find("tbody")
@@ -234,13 +253,13 @@ if header_table:
         rows = tbody.find_all("tr")
         for row in rows:
             th = row.find("th")
-            if th and th.get_text(strip=True) == "Date":
+            if th and th.get_text(strip=True) == "Date:":
                 td = row.find("td")
                 if td:
                     comp_date = td.get_text(strip=True)
-
 compResults_table = soup.find("table", id="competition_view_results")
 
+comp_insert = f"({comp_id}, /*ven_ID*/, '{comp_name}', '{comp_date}', 'tested')"
 
 if compResults_table:
     for row in compResults_table.find_all("tr"):
@@ -275,10 +294,10 @@ if compResults_table:
                 team_name = a_team.get_text(strip=True)
                 href = a_team.get("href", "")
                 team_id = href.split("=")[-1]
-            else:
-                team_name, team_id = "NULL", "NULL"
-        else:
-            team_name, team_id = "NULL", "NULL"
+                if team_id == "1":
+                    team_id = "NULL"
+
+                
 
         #Lifter state
         td_state = row.find("td", class_="competition_view_state")
@@ -295,7 +314,7 @@ if compResults_table:
         td_DT = row.find("td", style="text-align: center;")
         drug_test = td_DT.get_text(strip=True)
         if drug_test == "X":
-            drug_test = "Pass"
+            drug_test = "pass"
         else:
             drug_test = "NULL"
 
@@ -342,7 +361,8 @@ if compResults_table:
         if team_id not in teams_inserted:
             teams_inserted[team_id] = team_name
             team_insert = (f"({team_id}, '{team_name}')")
-            team_value.append(team_insert)
+            if team_id != "NULL":
+                team_value.append(team_insert)
 
 
         ## LIFTER CATEGORY TABLE INSERTS ##
@@ -350,12 +370,22 @@ if compResults_table:
         if category in category_mapping:
             category_deets = category_mapping[category]
             lifter_gender = category_deets["gender"]
-            lifter_insert = (
+            if drug_test == "NULL":
+                lifter_insert = (
+                f"({lifter_id}, {team_id}, {lifter_YOB}, '{lifter_state}', '{lifter_gender}', '{first_name}', '{last_name}', {drug_test})"
+                ) 
+            else:
+                lifter_insert = (
                 f"({lifter_id}, {team_id}, {lifter_YOB}, '{lifter_state}', '{lifter_gender}', '{first_name}', '{last_name}', '{drug_test}')"
-            )
+                ) 
             lifter_value.append(lifter_insert)
 
 final_sql_blocks = []
+
+if comp_insert:
+    full_comp_sql = f"{sql_comp}" + comp_insert + ";\nCOMMIT;"
+    final_sql_blocks.append(full_comp_sql)
+final_sql_blocks.append(venue_insert)
 
 if lift_value:
     full_lift_sql = f"{sql_lift}" + ",\n".join(lift_value) + ";\nCOMMIT;"
