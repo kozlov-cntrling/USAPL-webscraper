@@ -17,36 +17,128 @@ sql_category = """
 START TRANSACTION;
 INSERT INTO CATEGORY (CAT_ID, CAT_NAME, CAT_GENDER, CAT_EXPERIENCE_MIN, CAT_EXPERIENCE_MAX)
 VALUES
-(1, 'Female - Raw Junior', 'F', 2, 2),
-(2, 'Female - Raw Master 1', 'F', 5, 5),
-(3, 'Female - Raw Master 2', 'F', 5, 5),
-(4, 'Female - Raw Open', 'F', 0, 0),
-(5, 'Female - Raw Teen 2', 'F', 1, 1),
-(6, 'Female - Raw Teen 3', 'F', 1, 1),
-(7, 'Female - Raw Teen 1', 'F', 1, 1),
-(8, 'Male - Raw Junior', 'M', 2, 2),
-(9, 'Male - Raw Master 1', 'M', 5, 5),
-(10, 'Male - Raw Master 2', 'M', 5, 5),
-(11, 'Male - Raw Master 3', 'M', 5, 5),
-(12, 'Male - Raw Open', 'M', 0, 0),
-(13, 'Male - Raw Teen 2', 'M', 1, 1),
-(14, 'Male - Raw Teen 3', 'M', 1, 1),
-(15, 'Male - Raw Teen 1', 'M', 1, 1),
-(16, 'Female - Equipped Junior', 'F', 2, 2),
-(17, 'Female - Equipped Master 1', 'F', 5, 5),
-(18, 'Female - Equipped Master 2', 'F', 5, 5),
-(19, 'Female - Equipped Open', 'F', 0, 0),
-(20, 'Female - Equipped Teen 2', 'F', 1, 1),
-(21, 'Female - Equipped Teen 3', 'F', 1, 1),
-(22, 'Female - Equipped Teen 1', 'F', 1, 1),
-(23, 'Male - Equipped Junior', 'M', 2, 2),
-(24, 'Male - Equipped Master 1', 'M', 5, 5),
-(25, 'Male - Equipped Master 2', 'M', 5, 5),
-(26, 'Male - Equipped Master 3', 'M', 5, 5),
-(27, 'Male - Equipped Open', 'M', 0, 0),
-(28, 'Male - Equipped Teen 2', 'M', 1, 1),
-(29, 'Male - Equipped Teen 3', 'M', 1, 1),
-(30, 'Male - Equipped Teen 1', 'M', 1, 1);
+(1, 'Female - Collegiate', 'F', 3, 3),
+(2, 'Female - High School', 'F', 1, 1),
+(3, 'Female - High School JV', 'F', 1, 1),
+(4, 'Female - High School Varsity', 'F', 3, 3),
+(5, 'Female - Junior', 'F', 1, 1),
+(6, 'Female - Master', 'F', 5, 5),
+(7, 'Female - Master 1', 'F', 5, 5),
+(8, 'Female - Master 2', 'F', 5, 5),
+(9, 'Female - Master 3', 'F', 6, 6),
+(10, 'Female - Master 4', 'F', 6, 6),
+(11, 'Female - Master 5', 'F', 7, 7),
+(12, 'Female - Master 6', 'F', 7, 7),
+(13, 'Female - Military Open', 'F', 8, 8),
+(14, 'Female - Open', 'F', 0, 0),
+(15, 'Female - Police & Fire', 'F', 3, 3),
+(16, 'Female - Raw Collegiate', 'F', 3, 3),
+(17, 'Female - Raw High School', 'F', 1, 1),
+(18, 'Female - Raw High School JV', 'F', 1, 1),
+(19, 'Female - Raw High School Varsity', 'F', 2, 2),
+(20, 'Female - Raw Junior', 'F', 1, 1),
+(21, 'Female - Raw Master', 'F', 3, 3),
+(22, 'Female - Raw Master 1', 'F', 5, 5),
+(23, 'Female - Raw Master 2', 'F', 5, 5),
+(24, 'Female - Raw Master 3', 'F', 5, 5),
+(25, 'Female - Raw Master 4', 'F', 6, 6),
+(26, 'Female - Raw Master 5', 'F', 7, 7),
+(27, 'Female - Raw Master 6', 'F', 7, 7),
+(28, 'Female - Raw Master 7', 'F', 7, 7),
+(29, 'Female - Raw Military Open', 'F', 4, 4),
+(30, 'Female - Raw Open', 'F', 0, 0),
+(31, 'Female - Raw Open Pro', 'F', 10, 10),
+(32, 'Female - Raw Special Olympian', 'F', 10, 10),
+(33, 'Female - Raw Teen', 'F', 1, 1),
+(34, 'Female - Raw Teen 1', 'F', 1, 1),
+(35, 'Female - Raw Teen 2', 'F', 2, 2),
+(36, 'Female - Raw Teen 3', 'F', 2, 2),
+(37, 'Female - Raw Youth', 'F', 0, 0),
+(38, 'Female - Raw Youth 1', 'F', 0, 0),
+(39, 'Female - Raw Youth 2', 'F', 1, 1),
+(40, 'Female - Raw Youth 3', 'F', 1, 1),
+(41, 'Female - Raw with Wraps Collegiate', 'F', 3, 3),
+(42, 'Female - Raw with Wraps High School', 'F', 2, 2),
+(43, 'Female - Raw with Wraps Junior', 'F', 1, 1),
+(44, 'Female - Raw with Wraps Master', 'F', 5, 5),
+(45, 'Female - Raw with Wraps Master 1', 'F', 5, 5),
+(46, 'Female - Raw with Wraps Master 2', 'F', 5, 5),
+(47, 'Female - Raw with Wraps Master 3', 'F', 5, 5),
+(48, 'Female - Raw with Wraps Master 4', 'F', 6, 6),
+(49, 'Female - Raw with Wraps Master 5', 'F', 6, 6),
+(50, 'Female - Raw with Wraps Military Open', 'F', 4, 4),
+(51, 'Female - Raw with Wraps Open', 'F', 0, 0),
+(52, 'Female - Raw with Wraps Teen', 'F', 0, 0),
+(53, 'Female - Raw with Wraps Teen 1', 'F', 1, 1),
+(54, 'Female - Raw with Wraps Teen 2', 'F', 1, 1),
+(55, 'Female - Raw with Wraps Teen 3', 'F', 1, 1),
+(56, 'Female - Raw with Wraps Youth 3', 'F', 1, 1),
+(57, 'Female - Special Olympian', 'F', 10, 10),
+(58, 'Female - Teen', 'F', 0, 0),
+(59, 'Female - Teen 1', 'F', 1, 1),
+(60, 'Female - Teen 2', 'F', 1, 1),
+(61, 'Female - Teen 3', 'F', 1, 1),
+(62, 'Male - Collegiate', 'M', 3, 3),
+(63, 'Male - High School', 'M', 1, 1),
+(64, 'Male - High School JV', 'M', 1, 1),
+(65, 'Male - High School Varsity', 'M', 3, 3),
+(66, 'Male - Junior', 'M', 1, 1),
+(67, 'Male - Master', 'M', 5, 5),
+(68, 'Male - Master 1', 'M', 5, 5),
+(69, 'Male - Master 2', 'M', 5, 5),
+(70, 'Male - Master 3', 'M', 6, 6),
+(71, 'Male - Master 4', 'M', 6, 6),
+(72, 'Male - Master 5', 'M', 7, 7),
+(73, 'Male - Master 6', 'M', 7, 7),
+(74, 'Male - Military Open', 'M', 8, 8),
+(75, 'Male - Open', 'M', 0, 0),
+(76, 'Male - Police & Fire', 'M', 3, 3),
+(77, 'Male - Raw Collegiate', 'M', 3, 3),
+(78, 'Male - Raw High School', 'M', 1, 1),
+(79, 'Male - Raw High School JV', 'M', 1, 1),
+(80, 'Male - Raw High School Varsity', 'M', 2, 2),
+(81, 'Male - Raw Junior', 'M', 1, 1),
+(82, 'Male - Raw Master', 'M', 3, 3),
+(83, 'Male - Raw Master 1', 'M', 5, 5),
+(84, 'Male - Raw Master 2', 'M', 5, 5),
+(85, 'Male - Raw Master 3', 'M', 5, 5),
+(86, 'Male - Raw Master 4', 'M', 6, 6),
+(87, 'Male - Raw Master 5', 'M', 7, 7),
+(88, 'Male - Raw Master 6', 'M', 7, 7),
+(89, 'Male - Raw Master 7', 'M', 7, 7),
+(90, 'Male - Raw Military Open', 'M', 4, 4),
+(91, 'Male - Raw Open', 'M', 0, 0),
+(92, 'Male - Raw Open Pro', 'M', 10, 10),
+(93, 'Male - Raw Special Olympian', 'M', 10, 10),
+(94, 'Male - Raw Teen', 'M', 1, 1),
+(95, 'Male - Raw Teen 1', 'M', 1, 1),
+(96, 'Male - Raw Teen 2', 'M', 2, 2),
+(97, 'Male - Raw Teen 3', 'M', 2, 2),
+(98, 'Male - Raw Youth', 'M', 0, 0),
+(99, 'Male - Raw Youth 1', 'M', 0, 0),
+(100, 'Male - Raw Youth 2', 'M', 1, 1),
+(101, 'Male - Raw Youth 3', 'M', 1, 1),
+(102, 'Male - Raw with Wraps Collegiate', 'M', 3, 3),
+(103, 'Male - Raw with Wraps High School', 'M', 2, 2),
+(104, 'Male - Raw with Wraps Junior', 'M', 1, 1),
+(105, 'Male - Raw with Wraps Master', 'M', 5, 5),
+(106, 'Male - Raw with Wraps Master 1', 'M', 5, 5),
+(107, 'Male - Raw with Wraps Master 2', 'M', 5, 5),
+(108, 'Male - Raw with Wraps Master 3', 'M', 5, 5),
+(109, 'Male - Raw with Wraps Master 4', 'M', 6, 6),
+(110, 'Male - Raw with Wraps Master 5', 'M', 6, 6),
+(111, 'Male - Raw with Wraps Military Open', 'M', 4, 4),
+(112, 'Male - Raw with Wraps Open', 'M', 0, 0),
+(113, 'Male - Raw with Wraps Teen', 'M', 0, 0),
+(114, 'Male - Raw with Wraps Teen 1', 'M', 1, 1),
+(115, 'Male - Raw with Wraps Teen 2', 'M', 1, 1),
+(116, 'Male - Raw with Wraps Teen 3', 'M', 1, 1),
+(117, 'Male - Raw with Wraps Youth 3', 'M', 1, 1),
+(118, 'Male - Special Olympian', 'M', 10, 10),
+(119, 'Male - Teen', 'M', 0, 0),
+(120, 'Male - Teen 1', 'M', 1, 1),
+(121, 'Male - Teen 2', 'M', 1, 1),
+(122, 'Male - Teen 3', 'M', 1, 1);
 COMMIT;
 """
 
@@ -114,12 +206,12 @@ with open("data/output.txt", "w") as file:
     )
     file.write(
         "CREATE TABLE COMPETITION_LOG (\n"
-        "\tCOMP_LOG_LIFTER_ID VARCHAR(20) PRIMARY KEY,\n"
         "\tLIFTER_ID INT,\n"
         "\tCOMPETITION_ID INT,\n"
         "\tCAT_ID INT,\n"
         "\tCOMP_LOG_LIFTER_BODYWEIGHT DECIMAL(5,2) NOT NULL,\n"
         "\tCOMP_LOG_LIFTER_EXPERIENCE INT NOT NULL,\n"
+        "\tPRIMARY KEY(LIFTER_ID, COMPETITION_ID), -- composite PK\n"
         "\tFOREIGN KEY(LIFTER_ID) REFERENCES LIFTER(LIFTER_ID),\n"
         "\tFOREIGN KEY(COMPETITION_ID) REFERENCES COMPETITION(COMPETITION_ID),\n"
         "\tFOREIGN KEY(CAT_ID) REFERENCES CATEGORY(CAT_ID)\n"
@@ -131,8 +223,9 @@ with open("data/output.txt", "w") as file:
         "\tLIFT_NAME VARCHAR(13),\n"
         "\tLIFT_WEIGHT DECIMAL(4,1),\n"
         "\tLIFT_ATMPTNUM INT NOT NULL,\n"
-        "\tCOMP_LOG_LIFTER_ID VARCHAR(20),\n"
-        "\tFOREIGN KEY(COMP_LOG_LIFTER_ID) REFERENCES COMPETITION_LOG(COMP_LOG_LIFTER_ID)\n"
+        "\tLIFTER_ID INT,\n"
+        "\tCOMPETITION_ID INT,\n"
+        "\tFOREIGN KEY(LIFTER_ID, COMPETITION_ID) REFERENCES COMPETITION_LOG(LIFTER_ID, COMPETITION_ID)\n"
         ");\n\n"
         "/*  —------------------------------------------------------------------------------------------------------------------------- */"
     )
@@ -141,7 +234,7 @@ with open("data/output.txt", "w") as file:
     )
 #initialize variables
 category = None
-category_id = 0
+category_id = 30
 squat = None 
 benchPress = None 
 deadlift = None 
@@ -151,6 +244,7 @@ lift_name = None
 lift_insert = None
 team_id = "Null"
 
+stored_lifter_ids = set()
 lift_value = []
 lifter_value = []
 comp_log_value = []
@@ -160,48 +254,140 @@ team_value = []
 teams_inserted = {}
 lift_dict = ['Squat', 'Bench Press', 'Deadlift']
 category_mapping = {
-    "Female - Raw Junior": {"id": 1, "experience": 2, "gender": "F"},
-    "Female - Raw Master 1": {"id": 2, "experience": 5, "gender": "F"},
-    "Female - Raw Master 2": {"id": 3, "experience": 5, "gender": "F"},
-    "Female - Raw Open": {"id": 4, "experience": 0, "gender": "F"},
-    "Female - Raw Teen 2": {"id": 5, "experience": 1, "gender": "F"},
-    "Female - Raw Teen 3": {"id": 6, "experience": 1, "gender": "F"},
-    "Female - Raw Teen 1": {"id": 7, "experience": 1, "gender": "F"},
-    "Male - Raw Junior": {"id": 8, "experience": 2, "gender": "M"},
-    "Male - Raw Master 1": {"id": 9, "experience": 5, "gender": "M"},
-    "Male - Raw Master 2": {"id": 10, "experience": 5, "gender": "M"},
-    "Male - Raw Master 3": {"id": 11, "experience": 5, "gender": "M"},
-    "Male - Raw Open": {"id": 12, "experience": 0, "gender": "M"},
-    "Male - Raw Teen 2": {"id": 13, "experience": 1, "gender": "M"},
-    "Male - Raw Teen 3": {"id": 14, "experience": 1, "gender": "M"},
-    "Male - Raw Teen 1": {"id": 15, "experience": 1, "gender": "M"},
-    "Female - Equipped Junior": {"id": 16, "experience": 2, "gender": "F"},
-    "Female - Equipped Master 1": {"id": 17, "experience": 5, "gender": "F"},
-    "Female - Equipped Master 2": {"id": 18, "experience": 5, "gender": "F"},
-    "Female - Equipped Open": {"id": 19, "experience": 0, "gender": "F"},
-    "Female - Equipped Teen 2": {"id": 20, "experience": 1, "gender": "F"},
-    "Female - Equipped Teen 3": {"id": 21, "experience": 1, "gender": "F"},
-    "Female - Equipped Teen 1": {"id": 22, "experience": 1, "gender": "F"},
-    "Male - Equipped Junior": {"id": 23, "experience": 2, "gender": "M"},
-    "Male - Equipped Master 1": {"id": 24, "experience": 5, "gender": "M"},
-    "Male - Equipped Master 2": {"id": 25, "experience": 5, "gender": "M"},
-    "Male - Equipped Master 3": {"id": 26, "experience": 5, "gender": "M"},
-    "Male - Equipped Open": {"id": 27, "experience": 0, "gender": "M"},
-    "Male - Equipped Teen 2": {"id": 28, "experience": 1, "gender": "M"},
-    "Male - Equipped Teen 3": {"id": 29, "experience": 1, "gender": "M"},
-    "Male - Equipped Teen 1": {"id": 30, "experience": 1, "gender": "M"},
+'Female - Collegiate': {'id': 1, 'experience': 3, 'gender': 'F'},
+'Female - High School': {'id': 2, 'experience': 1, 'gender': 'F'},
+'Female - High School JV': {'id': 3, 'experience': 1, 'gender': 'F'},
+'Female - High School Varsity': {'id': 4, 'experience': 3, 'gender': 'F'},
+'Female - Junior': {'id': 5, 'experience': 1, 'gender': 'F'},
+'Female - Master': {'id': 6, 'experience': 5, 'gender': 'F'},
+'Female - Master 1': {'id': 7, 'experience': 5, 'gender': 'F'},
+'Female - Master 2': {'id': 8, 'experience': 5, 'gender': 'F'},
+'Female - Master 3': {'id': 9, 'experience': 6, 'gender': 'F'},
+'Female - Master 4': {'id': 10, 'experience': 6, 'gender': 'F'},
+'Female - Master 5': {'id': 11, 'experience': 7, 'gender': 'F'},
+'Female - Master 6': {'id': 12, 'experience': 7, 'gender': 'F'},
+'Female - Military Open': {'id': 13, 'experience': 8, 'gender': 'F'},
+'Female - Open': {'id': 14, 'experience': 0, 'gender': 'F'},
+'Female - Police & Fire': {'id': 15, 'experience': 3, 'gender': 'F'},
+'Female - Raw Collegiate': {'id': 16, 'experience': 3, 'gender': 'F'},
+'Female - Raw High School': {'id': 17, 'experience': 1, 'gender': 'F'},
+'Female - Raw High School JV': {'id': 18, 'experience': 1, 'gender': 'F'},
+'Female - Raw High School Varsity': {'id': 19, 'experience': 2, 'gender': 'F'},
+'Female - Raw Junior': {'id': 20, 'experience': 1, 'gender': 'F'},
+'Female - Raw Master': {'id': 21, 'experience': 3, 'gender': 'F'},
+'Female - Raw Master 1': {'id': 22, 'experience': 5, 'gender': 'F'},
+'Female - Raw Master 2': {'id': 23, 'experience': 5, 'gender': 'F'},
+'Female - Raw Master 3': {'id': 24, 'experience': 5, 'gender': 'F'},
+'Female - Raw Master 4': {'id': 25, 'experience': 6, 'gender': 'F'},
+'Female - Raw Master 5': {'id': 26, 'experience': 7, 'gender': 'F'},
+'Female - Raw Master 6': {'id': 27, 'experience': 7, 'gender': 'F'},
+'Female - Raw Master 7': {'id': 28, 'experience': 7, 'gender': 'F'},
+'Female - Raw Military Open': {'id': 29, 'experience': 4, 'gender': 'F'},
+'Female - Raw Open': {'id': 30, 'experience': 0, 'gender': 'F'},
+'Female - Raw Open Pro': {'id': 31, 'experience': 10, 'gender': 'F'},
+'Female - Raw Special Olympian': {'id': 32, 'experience': 10, 'gender': 'F'},
+'Female - Raw Teen': {'id': 33, 'experience': 1, 'gender': 'F'},
+'Female - Raw Teen 1': {'id': 34, 'experience': 1, 'gender': 'F'},
+'Female - Raw Teen 2': {'id': 35, 'experience': 2, 'gender': 'F'},
+'Female - Raw Teen 3': {'id': 36, 'experience': 2, 'gender': 'F'},
+'Female - Raw Youth': {'id': 37, 'experience': 0, 'gender': 'F'},
+'Female - Raw Youth 1': {'id': 38, 'experience': 0, 'gender': 'F'},
+'Female - Raw Youth 2': {'id': 39, 'experience': 1, 'gender': 'F'},
+'Female - Raw Youth 3': {'id': 40, 'experience': 1, 'gender': 'F'},
+'Female - Raw with Wraps Collegiate': {'id': 41, 'experience': 3, 'gender': 'F'},
+'Female - Raw with Wraps High School': {'id': 42, 'experience': 2, 'gender': 'F'},
+'Female - Raw with Wraps Junior': {'id': 43, 'experience': 1, 'gender': 'F'},
+'Female - Raw with Wraps Master': {'id': 44, 'experience': 5, 'gender': 'F'},
+'Female - Raw with Wraps Master 1': {'id': 45, 'experience': 5, 'gender': 'F'},
+'Female - Raw with Wraps Master 2': {'id': 46, 'experience': 5, 'gender': 'F'},
+'Female - Raw with Wraps Master 3': {'id': 47, 'experience': 5, 'gender': 'F'},
+'Female - Raw with Wraps Master 4': {'id': 48, 'experience': 6, 'gender': 'F'},
+'Female - Raw with Wraps Master 5': {'id': 49, 'experience': 6, 'gender': 'F'},
+'Female - Raw with Wraps Military Open': {'id': 50, 'experience': 4, 'gender': 'F'},
+'Female - Raw with Wraps Open': {'id': 51, 'experience': 0, 'gender': 'F'},
+'Female - Raw with Wraps Teen': {'id': 52, 'experience': 0, 'gender': 'F'},
+'Female - Raw with Wraps Teen 1': {'id': 53, 'experience': 1, 'gender': 'F'},
+'Female - Raw with Wraps Teen 2': {'id': 54, 'experience': 1, 'gender': 'F'},
+'Female - Raw with Wraps Teen 3': {'id': 55, 'experience': 1, 'gender': 'F'},
+'Female - Raw with Wraps Youth 3': {'id': 56, 'experience': 1, 'gender': 'F'},
+'Female - Special Olympian': {'id': 57, 'experience': 10, 'gender': 'F'},
+'Female - Teen': {'id': 58, 'experience': 0, 'gender': 'F'},
+'Female - Teen 1': {'id': 59, 'experience': 1, 'gender': 'F'},
+'Female - Teen 2': {'id': 60, 'experience': 1, 'gender': 'F'},
+'Female - Teen 3': {'id': 61, 'experience': 1, 'gender': 'F'},
+'Male - Collegiate': {'id': 62, 'experience': 3, 'gender': 'M'},
+'Male - High School': {'id': 63, 'experience': 1, 'gender': 'M'},
+'Male - High School JV': {'id': 64, 'experience': 1, 'gender': 'M'},
+'Male - High School Varsity': {'id': 65, 'experience': 3, 'gender': 'M'},
+'Male - Junior': {'id': 66, 'experience': 1, 'gender': 'M'},
+'Male - Master': {'id': 67, 'experience': 5, 'gender': 'M'},
+'Male - Master 1': {'id': 68, 'experience': 5, 'gender': 'M'},
+'Male - Master 2': {'id': 69, 'experience': 5, 'gender': 'M'},
+'Male - Master 3': {'id': 70, 'experience': 6, 'gender': 'M'},
+'Male - Master 4': {'id': 71, 'experience': 6, 'gender': 'M'},
+'Male - Master 5': {'id': 72, 'experience': 7, 'gender': 'M'},
+'Male - Master 6': {'id': 73, 'experience': 7, 'gender': 'M'},
+'Male - Military Open': {'id': 74, 'experience': 8, 'gender': 'M'},
+'Male - Open': {'id': 75, 'experience': 0, 'gender': 'M'},
+'Male - Police & Fire': {'id': 76, 'experience': 3, 'gender': 'M'},
+'Male - Raw Collegiate': {'id': 77, 'experience': 3, 'gender': 'M'},
+'Male - Raw High School': {'id': 78, 'experience': 1, 'gender': 'M'},
+'Male - Raw High School JV': {'id': 79, 'experience': 1, 'gender': 'M'},
+'Male - Raw High School Varsity': {'id': 80, 'experience': 2, 'gender': 'M'},
+'Male - Raw Junior': {'id': 81, 'experience': 1, 'gender': 'M'},
+'Male - Raw Master': {'id': 82, 'experience': 3, 'gender': 'M'},
+'Male - Raw Master 1': {'id': 83, 'experience': 5, 'gender': 'M'},
+'Male - Raw Master 2': {'id': 84, 'experience': 5, 'gender': 'M'},
+'Male - Raw Master 3': {'id': 85, 'experience': 5, 'gender': 'M'},
+'Male - Raw Master 4': {'id': 86, 'experience': 6, 'gender': 'M'},
+'Male - Raw Master 5': {'id': 87, 'experience': 7, 'gender': 'M'},
+'Male - Raw Master 6': {'id': 88, 'experience': 7, 'gender': 'M'},
+'Male - Raw Master 7': {'id': 89, 'experience': 7, 'gender': 'M'},
+'Male - Raw Military Open': {'id': 90, 'experience': 4, 'gender': 'M'},
+'Male - Raw Open': {'id': 91, 'experience': 0, 'gender': 'M'},
+'Male - Raw Open Pro': {'id': 92, 'experience': 10, 'gender': 'M'},
+'Male - Raw Special Olympian': {'id': 93, 'experience': 10, 'gender': 'M'},
+'Male - Raw Teen': {'id': 94, 'experience': 1, 'gender': 'M'},
+'Male - Raw Teen 1': {'id': 95, 'experience': 1, 'gender': 'M'},
+'Male - Raw Teen 2': {'id': 96, 'experience': 2, 'gender': 'M'},
+'Male - Raw Teen 3': {'id': 97, 'experience': 2, 'gender': 'M'},
+'Male - Raw Youth': {'id': 98, 'experience': 0, 'gender': 'M'},
+'Male - Raw Youth 1': {'id': 99, 'experience': 0, 'gender': 'M'},
+'Male - Raw Youth 2': {'id': 100, 'experience': 1, 'gender': 'M'},
+'Male - Raw Youth 3': {'id': 101, 'experience': 1, 'gender': 'M'},
+'Male - Raw with Wraps Collegiate': {'id': 102, 'experience': 3, 'gender': 'M'},
+'Male - Raw with Wraps High School': {'id': 103, 'experience': 2, 'gender': 'M'},
+'Male - Raw with Wraps Junior': {'id': 104, 'experience': 1, 'gender': 'M'},
+'Male - Raw with Wraps Master': {'id': 105, 'experience': 5, 'gender': 'M'},
+'Male - Raw with Wraps Master 1': {'id': 106, 'experience': 5, 'gender': 'M'},
+'Male - Raw with Wraps Master 2': {'id': 107, 'experience': 5, 'gender': 'M'},
+'Male - Raw with Wraps Master 3': {'id': 108, 'experience': 5, 'gender': 'M'},
+'Male - Raw with Wraps Master 4': {'id': 109, 'experience': 6, 'gender': 'M'},
+'Male - Raw with Wraps Master 5': {'id': 110, 'experience': 6, 'gender': 'M'},
+'Male - Raw with Wraps Military Open': {'id': 111, 'experience': 4, 'gender': 'M'},
+'Male - Raw with Wraps Open': {'id': 112, 'experience': 0, 'gender': 'M'},
+'Male - Raw with Wraps Teen': {'id': 113, 'experience': 0, 'gender': 'M'},
+'Male - Raw with Wraps Teen 1': {'id': 114, 'experience': 1, 'gender': 'M'},
+'Male - Raw with Wraps Teen 2': {'id': 115, 'experience': 1, 'gender': 'M'},
+'Male - Raw with Wraps Teen 3': {'id': 116, 'experience': 1, 'gender': 'M'},
+'Male - Raw with Wraps Youth 3': {'id': 117, 'experience': 1, 'gender': 'M'},
+'Male - Special Olympian': {'id': 118, 'experience': 10, 'gender': 'M'},
+'Male - Teen': {'id': 119, 'experience': 0, 'gender': 'M'},
+'Male - Teen 1': {'id': 120, 'experience': 1, 'gender': 'M'},
+'Male - Teen 2': {'id': 121, 'experience': 1, 'gender': 'M'},
+'Male - Teen 3': {'id': 122, 'experience': 1, 'gender': 'M'}
 }
 # CATEGORY TABLE INSERTS in disc (needs to be static) ##
 sql_comp_log = f"""/*Insert data
 COMPETITION_LOG */
 START TRANSACTION;
-INSERT INTO COMPETITION_LOG (COMP_LOG_LIFTER_ID, LIFTER_ID, COMPETITION_ID, CAT_ID, COMP_LOG_LIFTER_BODYWEIGHT, COMP_LOG_LIFTER_EXPERIENCE)
+INSERT INTO COMPETITION_LOG (LIFTER_ID, COMPETITION_ID, CAT_ID, COMP_LOG_LIFTER_BODYWEIGHT, COMP_LOG_LIFTER_EXPERIENCE)
 VALUES
 """
 sql_lift = f"""/*Insert data
 LIFT */
 START TRANSACTION;
-INSERT INTO LIFT (LIFT_ID, COMP_LOG_LIFTER_ID, LIFT_NAME, LIFT_WEIGHT, LIFT_ATMPTNUM)
+INSERT INTO LIFT (LIFT_ID, LIFTER_ID, COMPETITION_ID, LIFT_NAME, LIFT_WEIGHT, LIFT_ATMPTNUM)
 VALUES
 """
 sql_lifter = f"""/*Insert data
@@ -257,6 +443,10 @@ if header_table:
                 td = row.find("td")
                 if td:
                     comp_date = td.get_text(strip=True)
+                    year = comp_date.split("/")[2].strip()
+                    month = comp_date.split("/")[0].strip()
+                    day = comp_date.split("/")[1].strip()
+                    comp_date = f"{year}-{month}-{day}"
 compResults_table = soup.find("table", id="competition_view_results")
 
 comp_insert = f"({comp_id}, /*ven_ID*/, '{comp_name}', '{comp_date}', 'tested')"
@@ -270,12 +460,19 @@ if compResults_table:
         if td_lifterID is None:
             if row.find("th", colspan="20"):
                     category = row.find("th", colspan="20").get_text(strip=True)
-            continue
-
+                    if category not in category_mapping:
+                        category = category[:-1]
+                        if category not in category_mapping:
+                            print(f"Category '{category}' not found in mapping.")
+                    continue
         #Lifter ID
         td_id = td_lifterID.get('id')
         lifter_id = td_id.split("_")[1]
-        comp_log_lifter_id = lifter_id + '_' + comp_id
+
+        if lifter_id in stored_lifter_ids:
+            continue
+        stored_lifter_ids.add(lifter_id) 
+
         #Lifter name
         a_tag = td_lifterID.find("a")
         if a_tag:
@@ -296,9 +493,6 @@ if compResults_table:
                 team_id = href.split("=")[-1]
                 if team_id == "1":
                     team_id = "NULL"
-
-                
-
         #Lifter state
         td_state = row.find("td", class_="competition_view_state")
         lifter_state = td_state.get_text(strip=True)
@@ -331,7 +525,7 @@ if compResults_table:
                         weight_text = lift_td.get_text(strip=True)
                         lift_numbers[lift_number - 1] = weight_text
                         if weight_text == "":
-                            weight_text = "0"
+                            weight_text = 0
 
                         if lift_number in range(0,4):
                             lift_name = lift_dict[0]
@@ -343,19 +537,39 @@ if compResults_table:
                         pass
                 ## LIFT TABLE INSERTS ##
                 lift_id = lifter_id + '_' + str(lift_number) + '_' + comp_id    
-                lift_insert = (f"('{lift_id}', '{comp_log_lifter_id}', '{lift_name}', {weight_text}, {lift_number})")
+                lift_insert = (f"('{lift_id}', {lifter_id}, {comp_id}, '{lift_name}', {weight_text}, {lift_number})")
                 lift_value.append(lift_insert)
-
                 
-        ## COMPETITION_LOG TABLE INSERTS ##
-
+        ## LIFTER CATEGORY TABLE INSERTS ##
 
         if category in category_mapping:
             category_deets = category_mapping[category]
-            lifter_experience = category_deets["experience"]
-            comp_log_insert = f"('{comp_log_lifter_id}', {lifter_id}, {comp_id}, '{category}', {lifter_weight}, {lifter_experience})"
-            comp_log_value.append(comp_log_insert)
+            lifter_gender = category_deets["gender"]
+        else:
+            normalized_category = category.strip().lower()
+            if "male" in normalized_category:
+                lifter_gender = "M"
+            elif "female" in normalized_category:
+                lifter_gender = "F"
 
+        if drug_test == "NULL":
+            lifter_insert = (
+            f"({lifter_id}, {team_id}, {lifter_YOB}, '{lifter_state}', '{lifter_gender}', '{first_name}', '{last_name}', {drug_test})"
+            ) 
+        else:
+            lifter_insert = (
+            f"({lifter_id}, {team_id}, {lifter_YOB}, '{lifter_state}', '{lifter_gender}', '{first_name}', '{last_name}', '{drug_test}')"
+            ) 
+        lifter_value.append(lifter_insert)
+
+        ## COMPETITION_LOG TABLE INSERTS ##
+
+        if category in category_mapping:
+            category_deets = category_mapping[category]
+            category_id = category_deets["id"]
+            lifter_experience = category_deets["experience"]
+            comp_log_insert = f"({lifter_id}, {comp_id}, {category_id}, {lifter_weight}, {lifter_experience})"
+            comp_log_value.append(comp_log_insert)
         ## TEAM TABLE INSERTS ##
 
         if team_id not in teams_inserted:
@@ -365,46 +579,30 @@ if compResults_table:
                 team_value.append(team_insert)
 
 
-        ## LIFTER CATEGORY TABLE INSERTS ##
-
-        if category in category_mapping:
-            category_deets = category_mapping[category]
-            lifter_gender = category_deets["gender"]
-            if drug_test == "NULL":
-                lifter_insert = (
-                f"({lifter_id}, {team_id}, {lifter_YOB}, '{lifter_state}', '{lifter_gender}', '{first_name}', '{last_name}', {drug_test})"
-                ) 
-            else:
-                lifter_insert = (
-                f"({lifter_id}, {team_id}, {lifter_YOB}, '{lifter_state}', '{lifter_gender}', '{first_name}', '{last_name}', '{drug_test}')"
-                ) 
-            lifter_value.append(lifter_insert)
-
 final_sql_blocks = []
 
-if comp_insert:
-    full_comp_sql = f"{sql_comp}" + comp_insert + ";\nCOMMIT;"
-    final_sql_blocks.append(full_comp_sql)
 final_sql_blocks.append(venue_insert)
-
-if lift_value:
-    full_lift_sql = f"{sql_lift}" + ",\n".join(lift_value) + ";\nCOMMIT;"
-    final_sql_blocks.append(full_lift_sql)
-
-
-if comp_log_value:
-    full_comp_log_sql = f"{sql_comp_log}" + ",\n".join(comp_log_value) + ";\nCOMMIT;"
-    final_sql_blocks.append(full_comp_log_sql)
-
 
 if team_value:
     full_team_sql = f"{sql_team}" + ",\n".join(team_value) + ";\nCOMMIT;"
     final_sql_blocks.append(full_team_sql)
 
+if comp_insert:
+    full_comp_sql = f"{sql_comp}" + comp_insert + ";\nCOMMIT;"
+    final_sql_blocks.append(full_comp_sql)
 
 if lifter_value:
     full_lifter_sql = f"{sql_lifter}" + ",\n".join(lifter_value) + ";\nCOMMIT;"
     final_sql_blocks.append(full_lifter_sql)
+
+if comp_log_value:
+    full_comp_log_sql = f"{sql_comp_log}" + ",\n".join(comp_log_value) + ";\nCOMMIT;"
+    final_sql_blocks.append(full_comp_log_sql)
+
+if lift_value:
+    full_lift_sql = f"{sql_lift}" + ",\n".join(lift_value) + ";\nCOMMIT;"
+    final_sql_blocks.append(full_lift_sql)
+
 
 final_sql_script = "\n\n".join(final_sql_blocks)
 
@@ -419,7 +617,7 @@ print(f"File saved at: {file_path}")
 
 if current_os == "Windows":
     os.startfile(file_path)
-elif current_os == "Darwin":  # macOS
+elif current_os == "Darwin":
     subprocess.run(["open", file_path])
 elif current_os == "Linux":
     subprocess.run(["xdg-open", file_path])
