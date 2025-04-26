@@ -138,10 +138,13 @@ VALUES
 (119, 'Male - Teen', 'M', 0, 0),
 (120, 'Male - Teen 1', 'M', 1, 1),
 (121, 'Male - Teen 2', 'M', 1, 1),
-(122, 'Male - Teen 3', 'M', 1, 1);
+(122, 'Male - Teen 3', 'M', 1, 1),
+(123, 'Female - Raw Police & Fire', 'F', 3, 3),
+(124, 'Male - Raw Police & Fire', 'M', 3, 3),
+(125, 'Female - Raw Guest Lifter', 'F', 0, 0),
+(126, 'Male - Raw Guest Lifter', 'M', 0, 0);
 COMMIT;
 """
-
 with open("data/output.txt", "w") as file:
     file.write(
     "/* Database Systems, Group 12 /\n"
@@ -196,7 +199,7 @@ with open("data/output.txt", "w") as file:
         "\tLIFTER_ID INT PRIMARY KEY,\n"
         "\tTEAM_ID INT DEFAULT NULL,\n"
         "\tLIFTER_YOB INT NOT NULL,\n"
-        "\tLIFTER_STATE VARCHAR(2) NOT NULL,\n"
+        "\tLIFTER_STATE VARCHAR(3) NOT NULL,\n"
         "\tLIFTER_GENDER VARCHAR(1) NOT NULL,\n"
         "\tLIFTER_FNAME VARCHAR(100) NOT NULL,\n"
         "\tLIFTER_LNAME VARCHAR(100) NOT NULL,\n"
@@ -375,7 +378,11 @@ category_mapping = {
 'Male - Teen': {'id': 119, 'experience': 0, 'gender': 'M'},
 'Male - Teen 1': {'id': 120, 'experience': 1, 'gender': 'M'},
 'Male - Teen 2': {'id': 121, 'experience': 1, 'gender': 'M'},
-'Male - Teen 3': {'id': 122, 'experience': 1, 'gender': 'M'}
+'Male - Teen 3': {'id': 122, 'experience': 1, 'gender': 'M'},
+'Female - Raw Police & Fire': {'id': 123, 'experience': 3, 'gender': 'F'},
+'Male - Raw Police & Fire': {'id': 124, 'experience': 3, 'gender': 'M'},
+'Female - Raw Guest Lifter': {'id': 125, 'experience': 0, 'gender': 'F'},
+'Male - Raw Guest Lifter': {'id': 126, 'experience': 0, 'gender': 'M'},
 }
 # CATEGORY TABLE INSERTS in disc (needs to be static) ##
 sql_comp_log = f"""/*Insert data
@@ -417,7 +424,7 @@ sql_team = (
 "INSERT INTO TEAM (TEAM_ID, TEAM_NAME)\n"
 "VALUES\n"
 )
-url = 'https://usapl.liftingdatabase.com/competitions-view?id=121328'
+url = 'https://usapl.liftingdatabase.com/competitions-view?id=121596'
 scrape_url = requests.get(url)
 soup = BeautifulSoup(scrape_url.text, 'html.parser')
 
