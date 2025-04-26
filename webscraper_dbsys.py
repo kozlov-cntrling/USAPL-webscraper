@@ -467,6 +467,10 @@ if compResults_table:
         if td_lifterID is None:
             if row.find("th", colspan="20"):
                     category = row.find("th", colspan="20").get_text(strip=True)
+                    if category == "Bench press":
+                        continue
+                    if category == "Powerlifting":
+                        continue
                     if category not in category_mapping:
                         category = category[:-1]
                         if category not in category_mapping:
