@@ -252,6 +252,7 @@ lift_value = []
 lifter_value = []
 comp_log_value = []
 team_value = []
+comp_insert = set()
 
 #dictonaries
 teams_inserted = {}
@@ -424,171 +425,185 @@ sql_team = (
 "INSERT INTO TEAM (TEAM_ID, TEAM_NAME)\n"
 "VALUES\n"
 )
-url = 'https://usapl.liftingdatabase.com/competitions-view?id=121596'
-scrape_url = requests.get(url)
-soup = BeautifulSoup(scrape_url.text, 'html.parser')
 
-#Comp name
-comp_name = soup.find("h3").get_text(strip=True)
-print(f"Competition Name: {comp_name}")
 
-# Parse competition id from URL
-query = parse_qs(urlparse(url).query)
-comp_id = query.get('id', [None])[0]
-print(f"Competition ID: {comp_id}")
-
-#Comp date
-comp_date = None
-header_table = soup.find("table")
-if header_table:
-    tbody = header_table.find("tbody")
-    if tbody:
-        rows = tbody.find_all("tr")
-        for row in rows:
-            th = row.find("th")
-            if th and th.get_text(strip=True) == "Date:":
-                td = row.find("td")
-                if td:
-                    comp_date = td.get_text(strip=True)
-                    year = comp_date.split("/")[2].strip()
-                    month = comp_date.split("/")[0].strip()
-                    day = comp_date.split("/")[1].strip()
-                    comp_date = f"{year}-{month}-{day}"
-compResults_table = soup.find("table", id="competition_view_results")
-
-comp_insert = f"({comp_id}, /*ven_ID*/, '{comp_name}', '{comp_date}', 'tested')"
-
-if compResults_table:
-    for row in compResults_table.find_all("tr"):
-
-        td_lifterID = row.find("td", id=lambda x: x and x.startswith("lifter_"))
-        
-        #Lifter category
-        if td_lifterID is None:
-            if row.find("th", colspan="20"):
-                    category = row.find("th", colspan="20").get_text(strip=True)
-                    if category == "Bench press":
-                        continue
-                    if category == "Powerlifting":
-                        continue
-                    if category not in category_mapping:
-                        category = category[:-1]
-                        if category not in category_mapping:
-                            print(f"Category '{category}' not found in mapping.")
-                    continue
-        #Lifter ID
-        td_id = td_lifterID.get('id')
-        lifter_id = td_id.split("_")[1]
-
-        if lifter_id in stored_lifter_ids:
-            continue
-        stored_lifter_ids.add(lifter_id) 
-
-        #Lifter name
-        a_tag = td_lifterID.find("a")
-        if a_tag:
-            full_name = a_tag.get_text(strip=True)
-            split_name = full_name.split(" ")
-            first_name = split_name[0] if split_name else ""
-            last_name = " ".join(split_name[1:]) if len(split_name) > 1 else ""
-        else:
-            first_name, last_name = "", ""
-
-        #Team name and ID
-        td_team = row.find("td", class_="competition_view_club")
-        if td_team:
-            a_team = td_team.find("a")
-            if a_team:
-                team_name = a_team.get_text(strip=True)
-                href = a_team.get("href", "")
-                team_id = href.split("=")[-1]
-                if team_id == "1":
-                    team_id = "NULL"
-        #Lifter state
-        td_state = row.find("td", class_="competition_view_state")
-        lifter_state = td_state.get_text(strip=True)
-        #Lifter year of birth
-        td_yob = row.find_all("td")[3]
-        lifter_YOB = td_yob.get_text(strip=True)
+def scrape_stuff(url):
+    scrape_url = requests.get(url)
+    soup = BeautifulSoup(scrape_url.text, 'html.parser')
     
-        #Lifter BW
-        td_weight = row.find("td", class_="competition_view_weight")
-        lifter_weight = td_weight.get_text(strip=True) if td_weight else "NULL"
+    #Comp name
+    comp_name = soup.find("h3").get_text(strip=True)
+    print(f"Competition Name: {comp_name}")
+    
+    # Parse competition id from URL
+    query = parse_qs(urlparse(url).query)
+    comp_id = query.get('id', [None])[0]
+    print(f"Competition ID: {comp_id}")
+    
+    #Comp date
+    comp_date = None
+    header_table = soup.find("table")
+    if header_table:
+        tbody = header_table.find("tbody")
+        if tbody:
+            rows = tbody.find_all("tr")
+            for row in rows:
+                th = row.find("th")
+                if th and th.get_text(strip=True) == "Date:":
+                    td = row.find("td")
+                    if td:
+                        comp_date = td.get_text(strip=True)
+                        year = comp_date.split("/")[2].strip()
+                        month = comp_date.split("/")[0].strip()
+                        day = comp_date.split("/")[1].strip()
+                        comp_date = f"{year}-{month}-{day}"
+    compResults_table = soup.find("table", id="competition_view_results")
+    
+    comp_insert = f"({comp_id}, /*ven_ID*/, '{comp_name}', '{comp_date}', 'tested')"
+    
+    if compResults_table:
+        for row in compResults_table.find_all("tr"):
+    
+            td_lifterID = row.find("td", id=lambda x: x and x.startswith("lifter_"))
+            
+            #Lifter category
+            if td_lifterID is None:
+                if row.find("th", colspan="20"):
+                        category = row.find("th", colspan="20").get_text(strip=True)
+                        if category == "Bench press":
+                            continue
+                        if category == "Powerlifting":
+                            continue
+                        if category not in category_mapping:
+                            category = category[:-1]
+                            if category not in category_mapping:
+                                print(f"Category '{category}' not found in mapping.")
+                        continue
+            #Lifter ID
+            td_id = td_lifterID.get('id')
+            lifter_id = td_id.split("_")[1]
+    
+            if lifter_id in stored_lifter_ids:
+                continue
+            stored_lifter_ids.add(lifter_id) 
+    
+            #Lifter name
+            a_tag = td_lifterID.find("a")
+            if a_tag:
+                full_name = a_tag.get_text(strip=True)
+                split_name = full_name.split(" ")
+                first_name = split_name[0] if split_name else ""
+                last_name = " ".join(split_name[1:]) if len(split_name) > 1 else ""
+            else:
+                first_name, last_name = "", ""
+    
+            #Team name and ID
+            td_team = row.find("td", class_="competition_view_club")
+            if td_team:
+                a_team = td_team.find("a")
+                if a_team:
+                    team_name = a_team.get_text(strip=True)
+                    href = a_team.get("href", "")
+                    team_id = href.split("=")[-1]
+                    if team_id == "1":
+                        team_id = "NULL"
+            #Lifter state
+            td_state = row.find("td", class_="competition_view_state")
+            lifter_state = td_state.get_text(strip=True)
+            #Lifter year of birth
+            td_yob = row.find_all("td")[3]
+            lifter_YOB = td_yob.get_text(strip=True)
+        
+            #Lifter BW
+            td_weight = row.find("td", class_="competition_view_weight")
+            lifter_weight = td_weight.get_text(strip=True) if td_weight else "NULL"
+    
+            #Drug test pass/null
+            td_DT = row.find("td", style="text-align: center;")
+            drug_test = td_DT.get_text(strip=True)
+            if drug_test == "X":
+                drug_test = "pass"
+            else:
+                drug_test = "NULL"
+    
+            #All lift attempts
+    
+            lift_tds = row.find_all("td", id=lambda x: x and x.startswith("lift_"))
+            for lift_td in lift_tds:
+                td_lift_id = lift_td.get("id")
+                if lifter_id in td_lift_id:
+                    parts = td_lift_id.split("_")
+                    if len(parts) >= 3:
+                        try:
+                            lift_number = int(parts[2])
+                            weight_text = lift_td.get_text(strip=True)
+                            lift_numbers[lift_number - 1] = weight_text
+                            if weight_text == "":
+                                weight_text = 0
+    
+                            if lift_number in range(0,4):
+                                lift_name = lift_dict[0]
+                            elif lift_number in range(4,7):
+                                lift_name = lift_dict[1]
+                            elif lift_number in range(7,10):
+                                lift_name = lift_dict[2]
+                        except Exception:
+                            pass
+                    ## LIFT TABLE INSERTS ##
+                    lift_id = lifter_id + '_' + str(lift_number) + '_' + comp_id    
+                    lift_insert = (f"('{lift_id}', {lifter_id}, {comp_id}, '{lift_name}', {weight_text}, {lift_number})")
+                    lift_value.append(lift_insert)
+                    
+            ## LIFTER CATEGORY TABLE INSERTS ##
+    
+            if category in category_mapping:
+                category_deets = category_mapping[category]
+                lifter_gender = category_deets["gender"]
+            else:
+                normalized_category = category.strip().lower()
+                if "male" in normalized_category:
+                    lifter_gender = "M"
+                elif "female" in normalized_category:
+                    lifter_gender = "F"
+    
+            if drug_test == "NULL":
+                lifter_insert = (
+                f"({lifter_id}, {team_id}, {lifter_YOB}, '{lifter_state}', '{lifter_gender}', '{first_name}', '{last_name}', {drug_test})"
+                ) 
+            else:
+                lifter_insert = (
+                f"({lifter_id}, {team_id}, {lifter_YOB}, '{lifter_state}', '{lifter_gender}', '{first_name}', '{last_name}', '{drug_test}')"
+                ) 
+            lifter_value.append(lifter_insert)
+    
+            ## COMPETITION_LOG TABLE INSERTS ##
+    
+            if category in category_mapping:
+                category_deets = category_mapping[category]
+                category_id = category_deets["id"]
+                lifter_experience = category_deets["experience"]
+                comp_log_insert = f"({lifter_id}, {comp_id}, {category_id}, {lifter_weight}, {lifter_experience})"
+                comp_log_value.append(comp_log_insert)
+            ## TEAM TABLE INSERTS ##
+    
+            if team_id not in teams_inserted:
+                teams_inserted[team_id] = team_name
+                team_insert = (f"({team_id}, '{team_name}')")
+                if team_id != "NULL":
+                    team_value.append(team_insert)
 
-        #Drug test pass/null
-        td_DT = row.find("td", style="text-align: center;")
-        drug_test = td_DT.get_text(strip=True)
-        if drug_test == "X":
-            drug_test = "pass"
-        else:
-            drug_test = "NULL"
 
-        #All lift attempts
+urls = [
+    'https://usapl.liftingdatabase.com/competitions-view?id=121328',
+    'https://usapl.liftingdatabase.com/competitions-view?id=121596',
+    'https://usapl.liftingdatabase.com/competitions-view?id=120765',
+    'https://usapl.liftingdatabase.com/competitions-view?id=121765',
+    'https://usapl.liftingdatabase.com/competitions-view?id=121762',
+    'https://usapl.liftingdatabase.com/competitions-view?id=121754'
+]
 
-        lift_tds = row.find_all("td", id=lambda x: x and x.startswith("lift_"))
-        for lift_td in lift_tds:
-            td_lift_id = lift_td.get("id")
-            if lifter_id in td_lift_id:
-                parts = td_lift_id.split("_")
-                if len(parts) >= 3:
-                    try:
-                        lift_number = int(parts[2])
-                        weight_text = lift_td.get_text(strip=True)
-                        lift_numbers[lift_number - 1] = weight_text
-                        if weight_text == "":
-                            weight_text = 0
-
-                        if lift_number in range(0,4):
-                            lift_name = lift_dict[0]
-                        elif lift_number in range(4,7):
-                            lift_name = lift_dict[1]
-                        elif lift_number in range(7,10):
-                            lift_name = lift_dict[2]
-                    except Exception:
-                        pass
-                ## LIFT TABLE INSERTS ##
-                lift_id = lifter_id + '_' + str(lift_number) + '_' + comp_id    
-                lift_insert = (f"('{lift_id}', {lifter_id}, {comp_id}, '{lift_name}', {weight_text}, {lift_number})")
-                lift_value.append(lift_insert)
-                
-        ## LIFTER CATEGORY TABLE INSERTS ##
-
-        if category in category_mapping:
-            category_deets = category_mapping[category]
-            lifter_gender = category_deets["gender"]
-        else:
-            normalized_category = category.strip().lower()
-            if "male" in normalized_category:
-                lifter_gender = "M"
-            elif "female" in normalized_category:
-                lifter_gender = "F"
-
-        if drug_test == "NULL":
-            lifter_insert = (
-            f"({lifter_id}, {team_id}, {lifter_YOB}, '{lifter_state}', '{lifter_gender}', '{first_name}', '{last_name}', {drug_test})"
-            ) 
-        else:
-            lifter_insert = (
-            f"({lifter_id}, {team_id}, {lifter_YOB}, '{lifter_state}', '{lifter_gender}', '{first_name}', '{last_name}', '{drug_test}')"
-            ) 
-        lifter_value.append(lifter_insert)
-
-        ## COMPETITION_LOG TABLE INSERTS ##
-
-        if category in category_mapping:
-            category_deets = category_mapping[category]
-            category_id = category_deets["id"]
-            lifter_experience = category_deets["experience"]
-            comp_log_insert = f"({lifter_id}, {comp_id}, {category_id}, {lifter_weight}, {lifter_experience})"
-            comp_log_value.append(comp_log_insert)
-        ## TEAM TABLE INSERTS ##
-
-        if team_id not in teams_inserted:
-            teams_inserted[team_id] = team_name
-            team_insert = (f"({team_id}, '{team_name}')")
-            if team_id != "NULL":
-                team_value.append(team_insert)
-
+for url in urls:
+    scrape_stuff(url)
 
 final_sql_blocks = []
 
@@ -613,7 +628,6 @@ if comp_log_value:
 if lift_value:
     full_lift_sql = f"{sql_lift}" + ",\n".join(lift_value) + ";\nCOMMIT;"
     final_sql_blocks.append(full_lift_sql)
-
 
 final_sql_script = "\n\n".join(final_sql_blocks)
 
